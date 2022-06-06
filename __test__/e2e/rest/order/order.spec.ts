@@ -42,31 +42,6 @@ describe('Setup For Order Test', () => {
             expect(response.body._meta).have.property('success');
             expect(response.body.data).instanceof(Array);
         });
-        
-        it('Should test submit Order', async () => {
-            const response = await server.post(`${TEST_ORDER_URL}/submit`)
-                .send([{ OrderId: responseObj.id, optionId: responseObj.options[0].id }])
-                .set('x-api-key', process.env.API_KEY || 'OrderAPIKey')
-                .expect(OK);
-            expect(response).instanceof(Object);
-            expect(response.body).instanceof(Object);
-            expect(response.body._meta).instanceof(Object);
-            expect(response.body._meta).have.property('status_code');
-            expect(response.body._meta).have.property('success');
-            expect(response.body.data).instanceof(Object);
-        });
-        
-        it('Should test Order result', async () => {
-            const response = await server.get(`${TEST_ORDER_URL}/${responseObj.id}/result`)
-                .set('x-api-key', process.env.API_KEY || 'OrderAPIKey')
-                .expect(OK);
-            expect(response).instanceof(Object);
-            expect(response.body).instanceof(Object);
-            expect(response.body._meta).instanceof(Object);
-            expect(response.body._meta).have.property('status_code');
-            expect(response.body._meta).have.property('success');
-            expect(response.body.data).instanceof(Object);
-        });
 
     });
 
