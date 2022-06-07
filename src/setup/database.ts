@@ -1,6 +1,8 @@
 import admin, {initializeApp, firestore} from 'firebase-admin';
 import config from 'config';
 
+const privateKey = `${config.get('database.firebase.private_key')}`.replace(/\\n/g, '\n');
+
 export const firebaseConfig = {
     apiKey: config.get('database.firebase.api_key'),
     authDomain: config.get('database.firebase.auth_domain'),
@@ -10,7 +12,7 @@ export const firebaseConfig = {
     messagingSenderId: config.get('database.firebase.messaging_sender_id'),
     appId: config.get('database.firebase.app_id'),  
     clientEmail: config.get('database.firebase.client_email') as string,  
-    privateKey: config.get('database.firebase.private_key') as string,  
+    privateKey,
 };
 
 export const firebase = initializeApp({
