@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/camelcase */
-import { extend, get, isEmpty, merge } from 'lodash';
+import { extend, get, isArray, isEmpty, isString, merge } from 'lodash';
 import QueryParser from '../../../lib/query-parser';
 import AppResponse from '../../../lib/app-response';
 import ResponseOption from '../../../v1/types/response-option';
@@ -78,6 +78,9 @@ export default abstract class AppProcessor {
       if (queryParser) {
         if (queryParser.filters) {
           const filters = queryParser.filters as Record<string, any>[];
+          console.log('filters:', queryParser.filters);
+          console.log('isString:', isString(queryParser.filters));
+          console.log('isString:', isString(queryParser.filters));
           query = this.applyFilters(query, filters) as never;
         }
         if (!queryParser.getAll) {
