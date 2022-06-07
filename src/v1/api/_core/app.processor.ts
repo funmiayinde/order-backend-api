@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/camelcase */
-import { extend, merge } from 'lodash';
+import { extend, get, isEmpty, merge } from 'lodash';
 import QueryParser from '../../../lib/query-parser';
 import AppResponse from '../../../lib/app-response';
 import ResponseOption from '../../../v1/types/response-option';
@@ -14,9 +14,16 @@ import AppValidation from './app.validation';
  * This is the parent processor where other services inherit from
  */
 export default abstract class AppProcessor {
-
+  /**
+   * This returns the model or the resource name
+   * @return {String}
+   **/
   abstract getModelName(): string;
-  
+
+  /**
+   * This returns the validation for the resource
+   * @return {AppValidation}
+   **/
   abstract getValidator(): AppValidation;
 
   /**
@@ -47,7 +54,7 @@ export default abstract class AppProcessor {
     if (message) {
       extend(meta, { message });
     }
-    if (pagination && queryParser && queryParser.getAll) {
+    if (pagination && !queryParser.getAll) {
       pagination.totalCount = count;
       if (pagination.morePages(count)) {
         pagination.next = pagination.current + 1;
@@ -74,21 +81,26 @@ export default abstract class AppProcessor {
           query = this.applyFilters(query, filters) as never;
         }
         if (!queryParser.getAll) {
+          //   query = query.orderBy(queryParser.sort) as never;
           query = query
-            .offset(pagination.skip)
+            // .startAt(pagination.skip)
             .limit(pagination.perPage) as never;
         }
-        if (queryParser.selection) {
-          query = query.select(queryParser.selection) as never;
+        if (queryParser.selection && queryParser.selection.length) {
+          const selection: string[] = JSON.parse(queryParser.selection);
+          console.log(
+            'selection::',
+            selection.map((s: string) => JSON.stringify(s)).join(','),
+          );
+          query = query.select(selection.join(',')) as never;
         }
-        query = query.orderBy(queryParser.sort) as never;
       }
-
       const value = await query
         .get()
         .then((snapshot) =>
           snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })),
         );
+      //   const count = await db.collection(this.getModelName()).get().then((doc) => doc.size);
       const count = await query.get().then((doc) => doc.size);
       return { value, count };
     } catch (e) {
@@ -102,15 +114,21 @@ export default abstract class AppProcessor {
    * @param {AppModel | Any} model The model object
    * @return {Object}
    */
-  async findObject(uid: string, queryParser?: QueryParser): Promise<any> {
+  async findObject(field: Record<string, any>, queryParser?: QueryParser) {
     try {
-      let query = db.collection(this.getModelName());
-      if (queryParser) {
-        if (queryParser.selection) {
-          query = query.select(queryParser.selection) as never;
-        }
+      let query = db.collection(this.getModelName()).where(Object.keys(field)[0], '==', Object.values(field)[0]);
+      if (queryParser && queryParser.selection && queryParser.selection.length) {
+        query = query.select(queryParser.selection.join(','));
       }
-      return query.doc(uid).get().then((doc) => doc);
+      let value;
+      const data: any[] = (await query.get()).docs;
+      if (data && data[0]){
+          value = data[0].data();
+      }
+      return {
+        query,
+        value,
+      };
     } catch (e) {
       throw e;
     }
@@ -122,13 +140,12 @@ export default abstract class AppProcessor {
    **/
   async createNewObject(obj: Record<string, never>): Promise<any> {
     try {
-      return await db
-        .collection(this.getModelName())
-        .add({
-          ...obj,
-          uid: v4(),
-        })
-        .then((doc) => doc);
+        const uid = v4();
+        await db.collection(this.getModelName()).add({
+            ...obj,
+            uid,
+        });
+        return { ...obj, uid};
     } catch (e) {
       throw e;
     }
@@ -139,14 +156,13 @@ export default abstract class AppProcessor {
    * @param {Object} obj The payload object
    * @return {Object}
    **/
-  async updateObject(
-    current: any,
-    obj: Record<string, unknown>,
-  ): Promise<any> {
+  async updateObject(current: any, obj: Record<string, unknown>): Promise<any> {
     try {
       const { uid } = current || {};
-      const value = await db.collection(this.getModelName()).doc(uid).set(obj);
-      return merge(current, value);
+      const { query } = await this.findObject({uid});
+      const data = await query.get();
+      await data.docs[0].ref.update(obj);
+      return merge(current, obj);
     } catch (e) {
       throw e;
     }
@@ -154,13 +170,18 @@ export default abstract class AppProcessor {
 
   /**
    * @param {Object} current The payload object
+   * @param {QueryParser} queryParser required for response
    * @return {Object}
    **/
-  async deleteObject(current: never): Promise<any> {
+  async deleteObject(current: never, queryParser?: QueryParser): Promise<string> {
     try {
       const { uid } = current || {};
-      await db.collection(this.getModelName()).doc(uid).delete();
-      return uid;
+      const field = queryParser && queryParser.query.deleteBy ? Object.keys(queryParser.query.deleteBy)[0] : '';
+      const condition = !isEmpty(field) ? { [field]: get(current, field) } : { uid };
+      const { query } = await this.findObject({...condition});
+      const data = await query.get();
+      await data.docs[0].ref.delete();
+      return !isEmpty(field) ? get(current, field) :  uid ;
     } catch (e) {
       throw e;
     }
@@ -168,11 +189,11 @@ export default abstract class AppProcessor {
 
   /***
    * @param {Object} query The query data
-   * @param {Object} filter The filter data
+   * @param {Object} filters The filter data
    * @return {Object}
    */
-  private applyFilters(query: unknown, filter: Record<any, any>[]) {
-    return filter.reduce(
+  private applyFilters(query: any, filters: Record<any, any>[]) {
+    return filters.reduce(
       (acc, filter) => acc.where(filter.field, filter.condition, filter.value),
       query,
     );

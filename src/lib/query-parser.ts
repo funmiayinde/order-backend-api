@@ -46,7 +46,7 @@ class QueryParser {
       try {
         this._filters = JSON.parse(query.filters);
       } catch (e) {
-        console.log('filter-error:', e.getMessages());
+        console.log('filter-error:', e);
       }
     }
   }
@@ -114,7 +114,7 @@ class QueryParser {
       }
       return this._sort;
     }
-    return ['uid'];
+    return 'bookingDate';
   }
 }
 

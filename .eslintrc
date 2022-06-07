@@ -16,6 +16,8 @@
       "error",
       "single"
     ],
+    "camelcase": "off",
+    "@typescript-eslint/camelcase": ["error"],
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": 1,
     "@typescript-eslint/no-inferrable-types": [

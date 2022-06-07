@@ -43,9 +43,9 @@ export abstract class AppController {
       const queryParser: QueryParser = new QueryParser(
         Object.assign({}, req.query),
       );
-      const object = await this.processor.findObject(uid, queryParser);
-      if (object) {
-        req.object = object;
+      const { value } = await this.processor.findObject({uid}, queryParser);
+      if (value) {
+        req.object = value;
         return next();
       }
       const appError = new AppError(this.lang.not_found, StatusCodes.NOT_FOUND);

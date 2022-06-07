@@ -19,7 +19,6 @@ export default async (
   if (token) {
     try {
       const user: DecodedIdToken = await firebase.auth().verifyIdToken(token);
-      console.log('verified-user:', user);
       if (user) {
         req.authId = user;
         req.user = user;
@@ -29,7 +28,6 @@ export default async (
         return next();
       }
     } catch (err) {
-      console.log('verify-token-err:', err);
       return next(new AppError(err, StatusCodes.INTERNAL_SERVER_ERROR));
     }
   } else {
