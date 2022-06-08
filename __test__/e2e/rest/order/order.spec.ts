@@ -16,7 +16,7 @@ test('Should test create order', async () => {
     .set('Authorization', TEST_TOKEN)
     .expect('Content-type', 'application/json; charset=utf-8')
     .expect(CREATED);
-  console.log('response:::', response.body);
+    
   data = response.body.data;
   expect(response.body).instanceof(Object);
   expect(response.body._meta).instanceof(Object);

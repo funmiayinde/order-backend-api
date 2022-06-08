@@ -1,43 +1,55 @@
-# WEB SERVICE
+# ORDER MANAGEMENT WEB SERVICE
 
-## Description
 Order Api web service written in Node, Typescript and Firestore
 
-## Local Setup
-To run the server locally, create a `.env` file at project root.
-You could base it off [`.env.sample`](.env.sample).
+## Description
+
+An order API Rest and GraphQL 
+
+## Getting Started
+To run the server locally, create a .env file at project root. You could base it off .env.sample.
 
 ```shell
 cp .env.sample .env
 ```
+### Dependencies
 
-Install dependencies
+* NodeJS
+* Typescript
+* Ensure you have Node.JS and Typescript installed on your system
+* Check `package.json` for other dependencies
 
-```shell
-npm i
+### Installing
+
+* Clone the repository `git clone  https://github.com/funmiayinde/order-backend-api.git`
+* Change into the directory `cd order-backend-api`
+* Install all required dependencies with `npm install`
+
+### Executing program
+
+* Start the application with `npm run dev`
+* Run unit test `npm test`
+* Build the application with `npm run build`
+```
+npm run dev
 ```
 
-Start the service
+## Help
 
-```shell
-npm run dev
+Any advise for common problems or issues, you can write issues here.
+```
+https://github.com/funmiayinde/order-backend-api/issues
+```
 
-### Requirements
+## Authors
 
-- Ensure you have Node.JS and Typescript installed on your system
+Contributors names and contact info
 
-### Getting Started
-- Clone the repository `git clone  https://github.com/funmiayinde/order-backend-api.git`
-- Change into the directory `cd order-backend-api`
-- Install all required dependencies with `npm install`
-- Start the application with `npm run dev`
-- Run unit test `npm test`
-- Build the application with `npm run build`
+ Funmi Ayinde
+[@Funmite_kay](https://twitter.com/Funmite_kay)
+If you need clarification on what is not clear, contact me via mail [funmi.syntax@gmail.com](mailto:funmi.syntax@gmail.com)
 
-### Testing
-- Run Test with `npm test` command
-
-### API Documentation Link
-- [view the api documentation] 
-- POST-MAN Collection https://www.getpostman.com/collections/19c8d5b88154c2d88105
-- POSTMAN documentation https://documenter.getpostman.com/view/255172/UVyrUc7a
+## Acknowledgments
+Inspiration, code snippets, etc.
+* [airbnb/javascript](https://github.com/airbnb/javascript)
+* [javascript-testing-best-practices](https://github.com/goldbergyoni/javascript-testing-best-practices)
