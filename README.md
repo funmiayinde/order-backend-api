@@ -40,6 +40,12 @@ Any advise for common problems or issues, you can write issues here.
 ```
 https://github.com/funmiayinde/order-backend-api/issues
 ```
+## GraphQL Query Link
+
+You can check out the graphQL link here.
+```
+https://studio.apollographql.com/public/Order-Graph-81pzs/explorer?variant=current
+```
 
 ## Authors
 
