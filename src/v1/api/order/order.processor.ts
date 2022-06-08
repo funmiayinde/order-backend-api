@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import AppProcessor from '../_core/app.processor';
 import OrderValidation from './order.validation';
-import { getUnixTime } from 'date-fns';
 import { get } from 'lodash';
+import moment from 'moment';
 
 /**
  * The OrderProcessor  class
@@ -29,7 +29,7 @@ class OrderProcessor extends AppProcessor {
    * @return {Object}
    **/
   public async createNewObject(obj: Record<any, any>): Promise<any> {
-    obj.bookingDate = getUnixTime(get(obj, 'bookingDate') as Date);
+    obj.bookingDate = moment(get(obj, 'bookingDate')).format('x');
     return await super.createNewObject(obj as Record<string, never>);
   }
 }

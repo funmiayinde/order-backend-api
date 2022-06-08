@@ -1,5 +1,5 @@
-import { fromUnixTime } from 'date-fns';
 import { GraphQLScalarType, Kind } from 'graphql';
+import moment from 'moment';
 
 export default {
   Date: new GraphQLScalarType({
@@ -9,7 +9,7 @@ export default {
       return new Date(value);
     },
     serialize(value) {
-      return fromUnixTime(value);
+      return value.toISOString();
     },
     parseLiteral(ast) {
       if (ast.kind === Kind.INT) {
@@ -22,13 +22,13 @@ export default {
     name: 'UTCMoment',
     description: 'UTCMoment custom scalar type',
     parseValue(value) {
-      return new Date(value);
+      return moment.utc(value);
     },
     serialize(value) {
-      return fromUnixTime(value);
+      return value.toISOString();;
     },
     parseLiteral(ast) {
-      return ast;
+      return moment.utc(ast as unknown);
     },
   }),
 };

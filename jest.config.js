@@ -4,6 +4,11 @@ module.exports = {
             tsConfig: 'tsconfig.json'
         }
     },
+    coverageThreshold: {
+        global: {
+            lines: 80,
+        },
+    },
     moduleFileExtensions: [
         'ts',
         'js'

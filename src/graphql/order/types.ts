@@ -14,7 +14,7 @@ export default `
         title: String!
         uid: String
         address: AddressInput!
-        bookingDate: Int!
+        bookingDate: Date!
         customer: CustomerInput!
     }
     
@@ -22,7 +22,7 @@ export default `
         title: String
         uid: String
         address: AddressInput
-        bookingDate: Int
+        bookingDate: Date
         customer: CustomerInput
     }
 
@@ -43,7 +43,7 @@ export default `
         uid: String
         title: String
         address: Address
-        bookingDate: Int
+        bookingDate: String
         customer: Customer
     }
 
